@@ -1,0 +1,61 @@
+{% load static wagtailcore_tags wagtailuserbar %}
+
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <title>
+        {% block title %}
+        {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
+        {% endblock %}
+        {% block title_suffix %}
+        {% wagtail_site as current_site %}
+        {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
+        {% endblock %}
+    </title>
+    {% if page.search_description %}
+    <meta name="description" content="{{ page.search_description }}" />
+    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {# Force all links in the live preview panel to be opened in a new tab #}
+    {% if request.in_preview_panel %}
+    <base target="_blank">
+    {% endif %}
+
+    {# Global stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/setup.css' %}">
+
+    {% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    {% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %} min-h-full flex flex-col">
+    {% wagtailuserbar %}
+
+    {% include 'includes/_navbar.html' %}
+
+    {% load banner_tags %}
+    {% banner_topo as banner %}
+    {% include 'includes/_banner_topo.html' %}
+
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'includes/_footer.html' %}
+
+    {# Global javascript #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/setup.js' %}"></script>
+
+    {% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    {% endblock %}
+</body>
+
+</html>

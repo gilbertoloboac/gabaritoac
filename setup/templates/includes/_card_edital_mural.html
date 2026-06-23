@@ -1,0 +1,51 @@
+{% load wagtailcore_tags %}
+{% with status=edital.status_inscricao %}
+{% with label=status.0 key=status.1 %}
+<div data-reveal="fade-in-up" data-delay="{% widthratio delay|default:0 1 100 %}"
+    class="bg-white rounded-2xl border p-4 flex flex-col justify-between relative group hover:shadow-md transition {% if key == 'encerrado' %}border-gray-200 opacity-60{% elif key == 'ultimos_dias' %}border-orange-200{% else %}border-indigo-100 hover:border-indigo-300{% endif %}">
+
+    <div class="flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+            {% if key == "encerrado" %}
+            <span class="text-red-700 bg-red-50 text-[8px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">{{ label }}</span>
+            {% elif key == "ultimos_dias" %}
+            <span class="text-orange-700 bg-orange-50 text-[8px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">{{ label }}</span>
+            {% else %}
+            <span class="text-emerald-700 bg-emerald-50 text-[8px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">{{ label }}</span>
+            {% endif %}
+            <a href="{% pageurl edital %}" aria-label="Ler edital"
+                class="text-indigo-400 hover:text-indigo-600 transition text-xs before:absolute before:inset-0 z-10">
+                <i class="fa-solid fa-arrow-right-long"></i>
+            </a>
+        </div>
+
+        <h3 class="font-black text-gray-900 text-xs leading-snug line-clamp-1 group-hover:text-indigo-600 transition">
+            {{ edital.orgao_responsavel|default:edital.title }}
+        </h3>
+
+        {% if edital.orgao_responsavel %}
+        <p class="text-[11px] text-gray-500 line-clamp-2 leading-snug">
+            {{ edital.title }}
+        </p>
+        {% endif %}
+
+        {% if edital.intro %}
+        <p class="text-[10px] text-gray-400 line-clamp-2 leading-relaxed mt-0.5">
+            {{ edital.intro|truncatewords:20 }}
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between text-[10px]">
+        {% if edital.prazo_inscricao %}
+        <span class="text-gray-400 font-medium">Inscrições até</span>
+        <span class="font-black {% if key == 'encerrado' %}text-red-500{% elif key == 'ultimos_dias' %}text-orange-600{% else %}text-indigo-600{% endif %}">
+            {{ edital.prazo_inscricao|date:"d/m/Y" }}
+        </span>
+        {% else %}
+        <span class="text-gray-300 italic">Sem prazo definido</span>
+        {% endif %}
+    </div>
+</div>
+{% endwith %}
+{% endwith %}

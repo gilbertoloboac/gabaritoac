@@ -1,0 +1,17 @@
+{
+  "name": "gabaritoac_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./setup/static/css/input.css -o ./setup/static/css/setup.css",
+    "watch:css": "npx tailwindcss -i ./setup/static/css/input.css -o ./setup/static/css/setup.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "tailwindcss": "^4.3.1"
+  }
+}
