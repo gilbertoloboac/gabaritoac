@@ -1,7 +1,7 @@
 {% load static wagtailcore_tags wagtailuserbar %}
 
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="pt-BR" class="h-full" id="html-root">
 
 <head>
     <meta charset="utf-8" />
@@ -28,12 +28,33 @@
     {# Global stylesheets #}
     <link rel="stylesheet" type="text/css" href="{% static 'css/setup.css' %}">
 
+    {# VLibras - Tradutor para Libras #}
+    <script src="https://vlibras.gov.br/app/vlibras.js" defer></script>
+
+    {# Dark mode: apply before render to prevent FOUC #}
+    <script>
+        (function() {
+            var theme = localStorage.getItem('darkmode');
+            if (theme === 'true' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
     {% block extra_css %}
     {# Override this in templates to add extra stylesheets #}
     {% endblock %}
+
+    {# Smooth color transition for dark mode #}
+    <style>
+        html { transition: background-color 0.3s, color 0.3s; }
+        .toggle-thumb-transition {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
 </head>
 
-<body class="{% block body_class %}{% endblock %} min-h-full flex flex-col">
+<body class="{% block body_class %}{% endblock %} min-h-full flex flex-col bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100">
     {% wagtailuserbar %}
 
     {% include 'includes/_navbar.html' %}
@@ -56,6 +77,76 @@
     {% block extra_js %}
     {# Override this in templates to add extra javascript #}
     {% endblock %}
+
+    {# VLibras - Widget do tradutor #}
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+
+    {# LGPD: Banner de consentimento de cookies #}
+    <div id="lgpd-cookie-banner" role="dialog" aria-label="Aviso de cookies"
+        class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 shadow-2xl z-50 p-4 md:p-6 translate-y-0 transition-transform duration-500 hidden">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
+            <div class="flex-1 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                <p class="font-bold text-gray-800 dark:text-gray-100 mb-1">🍪 Este site usa cookies</p>
+                <p>Utilizamos cookies próprios e de terceiros para melhorar sua experiência, analisar o tráfego e exibir conteúdo relevante. Ao continuar navegando, você concorda com nossa <a href="/privacidade/" class="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-800">Política de Privacidade</a>.</p>
+            </div>
+            <div class="flex gap-3 shrink-0">
+                <button id="lgpd-cookies-accept"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-6 py-3 rounded-xl transition shadow-sm">
+                    Aceitar
+                </button>
+                <button id="lgpd-cookies-decline"
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium px-6 py-3 rounded-xl transition">
+                    Recusar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var banner = document.getElementById('lgpd-cookie-banner');
+            var acceptBtn = document.getElementById('lgpd-cookies-accept');
+            var declineBtn = document.getElementById('lgpd-cookies-decline');
+            var key = 'lgpd_cookies_consent';
+
+            if (!localStorage.getItem(key)) {
+                banner.classList.remove('hidden');
+            }
+
+            function handleConsent(value) {
+                localStorage.setItem(key, value);
+                banner.classList.add('hidden');
+            }
+
+            acceptBtn.addEventListener('click', function() { handleConsent('accepted'); });
+            declineBtn.addEventListener('click', function() { handleConsent('declined'); });
+        })();
+
+        function toggleDarkMode() {
+            var root = document.documentElement;
+            var isDark = root.classList.toggle('dark');
+            localStorage.setItem('darkmode', isDark);
+
+            var thumb = document.getElementById('darkmode-thumb');
+            var thumbMobile = document.getElementById('darkmode-thumb-mobile');
+            var iconSun = document.getElementById('darkmode-icon-sun');
+            var iconMoon = document.getElementById('darkmode-icon-moon');
+            var iconSunMobile = document.getElementById('darkmode-icon-sun-mobile');
+            var iconMoonMobile = document.getElementById('darkmode-icon-moon-mobile');
+
+            if (thumb) thumb.style.transform = isDark ? 'translateX(38px)' : 'translateX(0)';
+            if (thumbMobile) thumbMobile.style.transform = isDark ? 'translateX(38px)' : 'translateX(0)';
+            if (iconSun) iconSun.className = isDark ? 'fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300 text-slate-400' : 'fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300 text-amber-600';
+            if (iconMoon) iconMoon.className = isDark ? 'fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300 text-indigo-600' : 'fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300 text-slate-400';
+            if (iconSunMobile) iconSunMobile.className = isDark ? 'fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300 text-slate-400' : 'fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300 text-amber-600';
+            if (iconMoonMobile) iconMoonMobile.className = isDark ? 'fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300 text-indigo-600' : 'fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300 text-slate-400';
+        }
+    </script>
 </body>
 
 </html>

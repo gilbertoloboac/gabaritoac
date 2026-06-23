@@ -1,6 +1,4 @@
 from django.db import models
-from django.core.mail import send_mail
-from django.conf import settings
 from wagtail.models import Page
 from wagtail.fields import RichTextField, StreamField
 from wagtail.search import index
@@ -11,7 +9,7 @@ from noticias.models import NoticiaPage, CategoriaSnippet
 
 class HomePage(Page):
     # Permite páginas filhas
-    subpage_types = ['noticias.NoticiaIndexPage', 'home.SobrePage', 'home.NewsletterPage']
+    subpage_types = ['noticias.NoticiaIndexPage', 'home.SobrePage', 'home.NewsletterPage', 'home.PoliticaPrivacidadePage', 'home.ContatoPage']
 
     def get_context(self, request):
         context = super().get_context(request)
@@ -71,15 +69,17 @@ class SobrePage(Page):
 
 class NewsletterSignup(models.Model):
     nome = models.CharField(max_length=255, verbose_name="Nome")
-    email = models.EmailField(unique=True, verbose_name="E-mail")
+    whatsapp = models.CharField(max_length=20, unique=True, verbose_name="WhatsApp", help_text="Número com DDD, apenas números (ex: 5599999999999)")
     criado_em = models.DateTimeField(auto_now_add=True, verbose_name="Data de inscrição")
+    consentimento = models.BooleanField(default=False, verbose_name="Autorizo o tratamento dos meus dados pessoais conforme a Política de Privacidade")
+    consentimento_em = models.DateTimeField(null=True, blank=True, verbose_name="Data do consentimento")
 
     class Meta:
-        verbose_name = "Inscrição Newsletter"
-        verbose_name_plural = "Inscrições Newsletter"
+        verbose_name = "Inscrição WhatsApp"
+        verbose_name_plural = "Inscrições WhatsApp"
 
     def __str__(self):
-        return f"{self.nome} <{self.email}>"
+        return f"{self.nome} — {self.whatsapp}"
 
 
 class NewsletterPage(Page):
@@ -98,48 +98,61 @@ class NewsletterPage(Page):
         FieldPanel('corpo'),
     ]
 
+    class Meta:
+        verbose_name = "Página WhatsApp"
+        verbose_name_plural = "Páginas WhatsApp"
+
     def serve(self, request):
-        from django.shortcuts import render, redirect
+        from django.shortcuts import render
 
-        if getattr(request, 'is_preview', False):
-            return render(request, 'home/newsletter_page.html', {'page': self})
+        return render(request, 'home/newsletter_page.html', {'page': self})
 
-        if request.method == 'POST':
-            nome = request.POST.get('nome', '').strip()
-            email = request.POST.get('email', '').strip()
-            erro = None
 
-            if not nome or not email:
-                erro = "Preencha todos os campos."
-            elif NewsletterSignup.objects.filter(email=email).exists():
-                erro = "Este e-mail já está cadastrado."
+class PoliticaPrivacidadePage(Page):
+    subpage_types = []
+    parent_page_types = ['home.HomePage']
 
-            if erro:
-                return render(request, 'home/newsletter_page.html', {
-                    'page': self,
-                    'erro': erro,
-                    'nome': nome,
-                    'email': email,
-                })
+    corpo = StreamField([
+        ("paragrafo", blocks.RichTextBlock(features=['h2', 'h3', 'h4', 'bold', 'italic', 'link', 'ol', 'ul'])),
+        ("citacao", blocks.BlockQuoteBlock()),
+    ], use_json_field=True)
 
-            NewsletterSignup.objects.create(nome=nome, email=email)
+    search_fields = Page.search_fields + [
+        index.SearchField('corpo'),
+    ]
 
-            try:
-                send_mail(
-                    subject=f"Nova inscrição na newsletter: {nome}",
-                    message=f"{nome} <{email}> se inscreveu na newsletter.",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[settings.DEFAULT_FROM_EMAIL],
-                    fail_silently=True,
-                )
-            except Exception:
-                pass
+    content_panels = Page.content_panels + [
+        FieldPanel('corpo'),
+    ]
 
-            return render(request, 'home/newsletter_page.html', {
-                'page': self,
-                'sucesso': True,
-            })
+    class Meta:
+        verbose_name = "Política de Privacidade"
+        verbose_name_plural = "Políticas de Privacidade"
 
-        return render(request, 'home/newsletter_page.html', {
-            'page': self,
-        })
+
+class ContatoPage(Page):
+    subpage_types = []
+    parent_page_types = ['home.HomePage']
+
+    corpo = StreamField([
+        ("paragrafo", blocks.RichTextBlock(features=['h2', 'h3', 'h4', 'bold', 'italic', 'link', 'ol', 'ul'])),
+    ], use_json_field=True)
+
+    dpo_email = models.EmailField(
+        verbose_name="E-mail do DPO/Encarregado",
+        help_text="E-mail para contato do Encarregado de Dados (LGPD Art. 41)",
+        default="dpo@gabaritoac.com.br",
+    )
+
+    search_fields = Page.search_fields + [
+        index.SearchField('corpo'),
+    ]
+
+    content_panels = Page.content_panels + [
+        FieldPanel('corpo'),
+        FieldPanel('dpo_email'),
+    ]
+
+    class Meta:
+        verbose_name = "Contato / DPO"
+        verbose_name_plural = "Contatos / DPO"

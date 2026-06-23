@@ -1,7 +1,7 @@
 {% load wagtailcore_tags wagtailimages_tags %}
-<article data-reveal="fade-in-up" data-delay="{% widthratio delay|default:0 1 100 %}" class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition group flex flex-col sm:flex-row">
+<article data-reveal="fade-in-up" data-delay="{% widthratio delay|default:0 1 100 %}" class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition group flex flex-col sm:flex-row">
     {% if item.imagem_capa %}
-    <div class="sm:w-56 h-48 sm:h-auto bg-gray-50 overflow-hidden flex-shrink-0">
+    <div class="sm:w-56 h-48 sm:h-auto bg-gray-50 dark:bg-slate-700 overflow-hidden flex-shrink-0">
         {% image item.imagem_capa fill-400x300 class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt=item.title %}
     </div>
     {% endif %}
@@ -12,14 +12,14 @@
             {{ item.categoria.nome }}
         </span>
         {% endif %}
-        <h2 class="font-black text-gray-900 text-base md:text-lg leading-snug">
-            <a href="{% pageurl item %}" class="hover:text-indigo-600 transition">{{ item.title }}</a>
+        <h2 class="font-black text-gray-900 dark:text-gray-100 text-base md:text-lg leading-snug">
+            <a href="{% pageurl item %}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">{{ item.title }}</a>
         </h2>
-        <p class="text-gray-500 text-xs leading-relaxed line-clamp-2">{{ item.intro }}</p>
-        <div class="flex items-center gap-3 text-[10px] text-gray-400 mt-1">
+        <p class="text-gray-500 dark:text-gray-400 text-xs leading-relaxed line-clamp-2">{{ item.intro }}</p>
+        <div class="flex items-center gap-3 text-[10px] text-gray-400 dark:text-gray-500 mt-1">
             <span>{{ item.first_published_at|date:"d/m/Y" }}</span>
             {% if item.status_edital %}
-            <span class="font-bold {% if item.status_edital == 'aberto' %}text-emerald-600{% elif item.status_edital == 'encerrado' %}text-red-500{% else %}text-amber-500{% endif %}">
+            <span class="font-bold {% if item.status_edital == 'aberto' %}text-emerald-600 dark:text-emerald-400{% elif item.status_edital == 'encerrado' %}text-red-500 dark:text-red-400{% else %}text-amber-500 dark:text-amber-400{% endif %}">
                 {{ item.get_status_edital_display }}
             </span>
             {% endif %}

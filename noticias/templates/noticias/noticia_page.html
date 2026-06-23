@@ -19,59 +19,80 @@
                     <span class="text-gray-400">/ Notícias</span>
                 </div>
 
-                <h1 class="text-2xl md:text-4xl font-black text-gray-900 tracking-tight leading-tight">
+                <h1 class="text-2xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-tight">
                     {{ page.title }}
                 </h1>
 
                 <p
-                    class="text-gray-500 font-medium text-base md:text-lg leading-relaxed border-l-4 border-amber-400 pl-4">
+                    class="text-gray-500 dark:text-gray-400 font-medium text-base md:text-lg leading-relaxed border-l-4 border-amber-400 pl-4">
                     {{ page.intro }}
                 </p>
 
                 <div
-                    class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-500 pt-2 border-b border-gray-100 pb-4">
-                    <span class="flex items-center gap-1.5 font-semibold text-gray-700">
-                        <i class="fas fa-user-circle text-gray-400 text-sm"></i>
+                    class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-500 dark:text-gray-400 pt-2 border-b border-gray-100 dark:border-slate-700 pb-4">
+                    <span class="flex items-center gap-1.5 font-semibold text-gray-700 dark:text-gray-200">
+                        <i class="fas fa-user-circle text-gray-400 dark:text-gray-500 text-sm"></i>
                         Equipe GabaritoAC
                     </span>
                     <span class="flex items-center gap-1.5">
-                        <i class="far fa-calendar text-gray-400"></i>
+                        <i class="far fa-calendar text-gray-400 dark:text-gray-500"></i>
                         {{ page.first_published_at|date:"d \d\e F \d\e Y" }}
                     </span>
                     <span class="flex items-center gap-1.5">
-                        <i class="far fa-clock text-gray-400"></i>
+                        <i class="far fa-clock text-gray-400 dark:text-gray-500"></i>
                         4 min de leitura
                     </span>
-                    <a href="https://wa.me/?text={{ page.title|urlencode }}%20%E2%80%94%20{{ request.build_absolute_uri|urlencode }}"
-                        target="_blank" rel="noopener noreferrer"
-                        class="ml-auto flex items-center gap-1.5 px-3 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg transition font-semibold">
-                        <i class="fab fa-whatsapp text-sm"></i>
-                        Compartilhar
-                    </a>
+                    <div class="ml-auto flex items-center gap-1">
+                        <span class="text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-wider mr-1">Compartilhar</span>
+                        <a href="https://wa.me/?text={{ page.title|urlencode }}%20%E2%80%94%20{{ request.build_absolute_uri|urlencode }}"
+                            target="_blank" rel="noopener noreferrer"
+                            class="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 transition" aria-label="Compartilhar no WhatsApp">
+                            <i class="fab fa-whatsapp text-sm"></i>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}"
+                            target="_blank" rel="noopener noreferrer"
+                            class="flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 transition" aria-label="Compartilhar no Facebook">
+                            <i class="fab fa-facebook-f text-sm"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text={{ page.title|urlencode }}&url={{ request.build_absolute_uri|urlencode }}"
+                            target="_blank" rel="noopener noreferrer"
+                            class="flex items-center justify-center w-7 h-7 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600 transition" aria-label="Compartilhar no X">
+                            <i class="fab fa-x-twitter text-sm"></i>
+                        </a>
+                        <a href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}&text={{ page.title|urlencode }}"
+                            target="_blank" rel="noopener noreferrer"
+                            class="flex items-center justify-center w-7 h-7 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-500 transition" aria-label="Compartilhar no Telegram">
+                            <i class="fab fa-telegram-plane text-sm"></i>
+                        </a>
+                        <button type="button" onclick="navigator.clipboard.writeText('{{ request.build_absolute_uri|escapejs }}').then(()=>{this.querySelector('i').className='fas fa-check text-xs'}).catch(()=>{})"
+                            class="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-50 dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-600 text-gray-500 dark:text-gray-400 transition" aria-label="Copiar link">
+                            <i class="fas fa-link text-xs"></i>
+                        </button>
+                    </div>
                 </div>
             </header>
 
             {% if page.imagem_capa %}
-            <div class="rounded-2xl overflow-hidden shadow-sm bg-gray-100 border border-gray-100">
+            <div class="rounded-2xl overflow-hidden shadow-sm bg-gray-100 dark:bg-slate-700 border border-gray-100 dark:border-slate-700">
                 {% image page.imagem_capa width-1200 class="w-full h-auto object-cover max-h-[450px]" alt=page.title %}
             </div>
             {% endif %}
 
-            <div class="prose prose-indigo max-w-none text-gray-800 leading-relaxed flex flex-col gap-8">
+            <div class="prose prose-indigo dark:text-gray-200 max-w-none text-gray-800 leading-relaxed flex flex-col gap-8">
                 {% for block in page.corpo %}
                 {% if block.block_type == 'paragrafo' %}
-                <div class="text-base text-gray-700 font-normal antialiased">
+                <div class="text-base text-gray-700 dark:text-gray-300 font-normal antialiased">
                     {{ block.value }}
                 </div>
                 {% elif block.block_type == 'imagem' %}
                 <div class="my-4 flex flex-col gap-2">
-                    <div class="rounded-xl overflow-hidden border border-gray-100">
+                    <div class="rounded-xl overflow-hidden border border-gray-100 dark:border-slate-700">
                         {% image block.value width-800 class="w-full h-auto mx-auto" %}
                     </div>
                 </div>
                 {% elif block.block_type == 'citacao' %}
                 <blockquote
-                    class="border-l-4 border-indigo-600 bg-indigo-50/40 p-5 rounded-r-2xl italic font-medium text-indigo-950 my-2">
+                    class="border-l-4 border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/40 p-5 rounded-r-2xl italic font-medium text-indigo-950 dark:text-indigo-200 my-2">
                     "{{ block.value }}"
                 </blockquote>
                 {% endif %}
@@ -79,37 +100,37 @@
             </div>
 
             {% if page.prazo_inscricao or page.taxa_inscricao or page.salario_ate %}
-            <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-6 mt-4 shadow-sm">
+            <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-800 rounded-2xl p-6 flex flex-col gap-6 mt-4 shadow-sm">
                 <h2
-                    class="font-black text-sm uppercase tracking-wider text-indigo-950 flex items-center gap-2">
+                    class="font-black text-sm uppercase tracking-wider text-indigo-950 dark:text-indigo-200 flex items-center gap-2">
                     <i class="fas fa-file-alt text-indigo-600"></i> Resumo das Vagas
                 </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {% if page.prazo_inscricao %}
-                    <div class="bg-white border border-indigo-100 p-4 rounded-xl shadow-sm flex flex-col gap-1">
+                    <div class="bg-white dark:bg-slate-800 border border-indigo-100 dark:border-indigo-800 p-4 rounded-xl shadow-sm flex flex-col gap-1">
                         <span
-                            class="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                            class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1">
                             <i class="far fa-calendar-alt text-indigo-500"></i> Inscrições Até
                         </span>
-                        <span class="text-sm font-black text-indigo-950">{{ page.prazo_inscricao|date:"d/m/Y" }}</span>
+                        <span class="text-sm font-black text-indigo-950 dark:text-indigo-200">{{ page.prazo_inscricao|date:"d/m/Y" }}</span>
                     </div>
                     {% endif %}
 
                     {% if page.taxa_inscricao %}
-                    <div class="bg-white border border-indigo-100 p-4 rounded-xl shadow-sm flex flex-col gap-1">
+                    <div class="bg-white dark:bg-slate-800 border border-indigo-100 dark:border-indigo-800 p-4 rounded-xl shadow-sm flex flex-col gap-1">
                         <span
-                            class="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                            class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1">
                             <i class="fas fa-dollar-sign text-indigo-500"></i> Taxa
                         </span>
-                        <span class="text-sm font-black text-indigo-950">R$ {{ page.taxa_inscricao }}</span>
+                        <span class="text-sm font-black text-indigo-950 dark:text-indigo-200">R$ {{ page.taxa_inscricao }}</span>
                     </div>
                     {% endif %}
 
                     {% if page.salario_ate %}
                     <div
-                        class="bg-white border border-indigo-100 p-4 rounded-xl shadow-sm flex flex-col gap-1 border-b-2 border-b-emerald-400">
+                        class="bg-white dark:bg-slate-800 border border-indigo-100 dark:border-indigo-800 p-4 rounded-xl shadow-sm flex flex-col gap-1 border-b-2 border-b-emerald-400">
                         <span
-                            class="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                            class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider flex items-center gap-1">
                             <i class="fas fa-chart-line text-emerald-500"></i> Salários Até
                         </span>
                         <span class="text-sm font-black text-emerald-600">R$ {{ page.salario_ate }}</span>
@@ -127,7 +148,7 @@
             {% endif %}
 
             <div
-                class="bg-gray-50 border border-gray-200/60 rounded-xl p-4 flex items-center justify-between text-xs text-gray-500 mt-2">
+                class="bg-gray-50 dark:bg-slate-800 border border-gray-200/60 dark:border-slate-700/60 rounded-xl p-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
                 <span class="flex items-center gap-1.5">
                     Fonte Oficial:
                     {% if page.fonte_original_url %}
@@ -136,13 +157,13 @@
                         Ver publicação original <i class="fas fa-external-link-alt text-[10px]"></i>
                     </a>
                     {% else %}
-                    <strong class="text-gray-700">Produção Autoral</strong>
+                    <strong class="text-gray-700 dark:text-gray-200">Produção Autoral</strong>
                     {% endif %}
                 </span>
 
                 {% if page.gerado_por_ia %}
                 <span
-                    class="bg-indigo-50 text-indigo-700 border border-indigo-100 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1">
+                    class="bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1">
                     <i class="fas fa-robot"></i> Monitorado por IA
                 </span>
                 {% endif %}
@@ -153,7 +174,7 @@
                 <div class="flex flex-wrap gap-2">
                     {% for tag in page.tags.all %}
                     <a href="/noticias/?tag={{ tag.slug }}"
-                        class="bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-600 font-medium text-xs px-3 py-1 rounded-lg transition">
+                        class="bg-gray-100 dark:bg-slate-700 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 hover:text-indigo-600 dark:hover:text-indigo-300 text-gray-600 dark:text-gray-300 font-medium text-xs px-3 py-1 rounded-lg transition">
                         #{{ tag.name }}
                     </a>
                     {% endfor %}
@@ -165,22 +186,22 @@
 
         <aside class="lg:col-span-1 flex flex-col gap-6 sticky top-24">
 
-            <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+            <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
                 <h2
-                    class="font-bold text-sm text-gray-900 border-b border-gray-100 pb-2 flex items-center justify-between">
+                    class="font-bold text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-slate-700 pb-2 flex items-center justify-between">
                     <span>Populares</span>
-                    <i class="fas fa-chart-line text-gray-400 text-xs"></i>
+                    <i class="fas fa-chart-line text-gray-400 dark:text-gray-500 text-xs"></i>
                 </h2>
                 <div class="flex flex-col gap-3 text-xs">
                     <div class="flex flex-col gap-1">
                         <span class="text-[9px] font-bold text-indigo-600 uppercase">Educação</span>
-                        <a href="#" class="font-bold text-gray-800 hover:text-indigo-600 leading-snug">Governo do Acre
+                        <a href="#" class="font-bold text-gray-800 dark:text-gray-200 hover:text-indigo-600 leading-snug">Governo do Acre
                             anuncia reajuste salarial para professores.</a>
                     </div>
-                    <hr class="border-gray-50">
+                    <hr class="border-gray-50 dark:border-slate-700">
                     <div class="flex flex-col gap-1">
                         <span class="text-[9px] font-bold text-amber-600 uppercase">Vestibular</span>
-                        <a href="#" class="font-bold text-gray-800 hover:text-indigo-600 leading-snug">Inscrições para o
+                        <a href="#" class="font-bold text-gray-800 dark:text-gray-200 hover:text-indigo-600 leading-snug">Inscrições para o
                             ENEM 2024 entram na reta final.</a>
                     </div>
                 </div>
@@ -198,18 +219,19 @@
                 </form>
             </div>
 
-            <a href="#" target="_blank" rel="noopener noreferrer"
-                class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl p-5 shadow-sm flex flex-col gap-3 transition">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                        <i class="fab fa-whatsapp text-xl"></i>
-                    </div>
-                    <div class="flex flex-col gap-0.5">
-                        <h2 class="font-bold text-sm">Receba no WhatsApp</h2>
-                        <p class="text-xs text-emerald-100 leading-relaxed">Notícias e editais direto no seu celular.</p>
-                    </div>
+            <a href="https://whatsapp.com/channel/0029VbDJLSR3bbV8Vzsnka3v" target="_blank" rel="noopener noreferrer"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl p-6 shadow-sm flex flex-col gap-4 transition group">
+                <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <i class="fab fa-whatsapp text-2xl"></i>
                 </div>
-                <span class="text-[10px] font-bold text-white/80 uppercase tracking-wider mt-1">Entrar no canal →</span>
+                <div class="flex flex-col gap-1.5">
+                    <h2 class="font-bold text-base">Receba no WhatsApp</h2>
+                    <p class="text-sm text-emerald-100 leading-relaxed">Editais, concursos e vagas direto no seu celular. Entre no canal gratuitamente.</p>
+                </div>
+                <span class="text-xs font-bold text-white/80 uppercase tracking-wider flex items-center gap-2 mt-1">
+                    Entrar no canal <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </span>
+                <p class="text-[10px] text-emerald-200/60 leading-relaxed">Seus dados são tratados conforme nossa <a href="/privacidade/" class="underline hover:text-white">Política de Privacidade</a>.</p>
             </a>
 
         </aside>

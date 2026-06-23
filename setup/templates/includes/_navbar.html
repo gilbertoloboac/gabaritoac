@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav class="bg-[#293962] border-b border-white/10 sticky top-0 z-50 shadow-sm">
+<nav class="bg-[#293962] dark:bg-slate-950 border-b border-white/10 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 h-20 flex items-center">
         <div class="flex-1 flex justify-start">
             <a href="/" class="flex items-center">
@@ -29,10 +29,24 @@
             </nav>
         </div>
 
-        <div class="flex-1 flex items-center justify-end gap-4">
-            <a href="/newsletter/"
-                class="inline-flex items-center gap-2 bg-[#2997FF] hover:bg-[#089565] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm whitespace-nowrap hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
-                <i class="far fa-envelope text-xs"></i> Receba Novidades
+        <div class="flex-1 flex items-center justify-end gap-2">
+            <button type="button" id="darkmode-toggle" onclick="toggleDarkMode()" aria-label="Alternar modo"
+                class="relative w-[72px] h-[34px] rounded-full overflow-hidden flex items-center cursor-pointer
+                                 bg-transparent border-2 border-amber-400 dark:border-indigo-400
+                       hover:scale-[1.03] active:scale-95 transition-all duration-300 shadow-sm">
+                <i id="darkmode-icon-sun" class="fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300
+                    text-amber-600 dark:text-slate-400"></i>
+                <i id="darkmode-icon-moon" class="fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300
+                    text-slate-400 dark:text-indigo-600"></i>
+                <span id="darkmode-thumb"
+                    class="absolute top-[3px] left-[3px] w-7 h-7 rounded-full
+                           bg-[#293962] dark:bg-slate-950 shadow-md
+                           toggle-thumb-transition z-20">
+                </span>
+            </button>
+            <a href="https://whatsapp.com/channel/0029VbDJLSR3bbV8Vzsnka3v" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm whitespace-nowrap hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
+                <i class="fab fa-whatsapp text-xs"></i> Receba no Zap
             </a>
 
             <button type="button" id="mobile-menu-button"
@@ -43,7 +57,7 @@
     </div>
 
     <div id="mobile-menu"
-        class="lg:hidden bg-[#293962] border-t border-white/10 overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
+        class="lg:hidden bg-[#293962] dark:bg-slate-950 border-t border-white/10 dark:border-slate-800 overflow-hidden transition-all duration-300 ease-in-out max-h-0 opacity-0">
 
         <div class="px-4 py-4 flex flex-col gap-3">
             <nav class="flex flex-col gap-3 font-semibold text-white text-sm">
@@ -54,6 +68,21 @@
                 <a href="/noticias/?categoria=cursos" class="hover:text-[#2997FF] py-2 border-b border-white/10 transition-colors duration-200">Cursos</a>
                 <a href="/noticias/" class="hover:text-[#2997FF] py-2 border-b border-white/10 transition-colors duration-200">Notícias</a>
                 <a href="/sobre/" class="hover:text-[#2997FF] py-2 transition-colors duration-200">Sobre</a>
+                <button type="button" onclick="toggleDarkMode()" class="py-2 flex items-center">
+                    <span class="relative w-[68px] h-[30px] rounded-full overflow-hidden flex items-center cursor-pointer
+                       bg-transparent border-2 border-amber-400 dark:border-indigo-400
+                                 hover:scale-[1.03] active:scale-95 transition-all duration-300 flex-shrink-0 shadow-sm">
+                        <i id="darkmode-icon-sun-mobile" class="fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300
+                            text-amber-600 dark:text-slate-400"></i>
+                        <i id="darkmode-icon-moon-mobile" class="fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300
+                            text-slate-400 dark:text-indigo-600"></i>
+                        <span id="darkmode-thumb-mobile"
+                            class="absolute top-[3px] left-[3px] w-6 h-6 rounded-full
+                                   bg-[#293962] dark:bg-slate-950 shadow-md
+                                   toggle-thumb-transition z-20">
+                        </span>
+                    </span>
+                </button>
             </nav>
         </div>
     </div>
@@ -61,6 +90,20 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        if (document.documentElement.classList.contains('dark')) {
+            var thumb = document.getElementById('darkmode-thumb');
+            var thumbMobile = document.getElementById('darkmode-thumb-mobile');
+            var iconSun = document.getElementById('darkmode-icon-sun');
+            var iconMoon = document.getElementById('darkmode-icon-moon');
+            var iconSunMobile = document.getElementById('darkmode-icon-sun-mobile');
+            var iconMoonMobile = document.getElementById('darkmode-icon-moon-mobile');
+            if (thumb) thumb.style.transform = 'translateX(38px)';
+            if (thumbMobile) thumbMobile.style.transform = 'translateX(38px)';
+            if (iconSun) iconSun.className = 'fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300 text-slate-400';
+            if (iconMoon) iconMoon.className = 'fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300 text-indigo-600';
+            if (iconSunMobile) iconSunMobile.className = 'fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300 text-slate-400';
+            if (iconMoonMobile) iconMoonMobile.className = 'fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300 text-indigo-600';
+        }
         const menuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const menuIcon = document.getElementById('menu-icon');

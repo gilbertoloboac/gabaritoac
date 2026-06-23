@@ -207,8 +207,7 @@ class Command(BaseCommand):
                         antigos += 1
                         continue
 
-                    short_link = re.sub(r"/arquivos/?$", "", link)
-                    short_link = short_link.rstrip("/")
+                    short_link = link.rstrip("/")
 
                     if len(short_link) > 490:
                         self.stderr.write(f"    URL muito longa, ignorando")

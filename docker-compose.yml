@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gabaritoac}
+      POSTGRES_USER: ${POSTGRES_USER:-gabaritoac}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gabaritoac} -d ${POSTGRES_DB:-gabaritoac}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    environment:
+      DJANGO_SETTINGS_MODULE: setup.settings.production
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-gabaritoac.com.br}
+      POSTGRES_DB: ${POSTGRES_DB:-gabaritoac}
+      POSTGRES_USER: ${POSTGRES_USER:-gabaritoac}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-https://gabaritoac.com.br}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.sendgrid.net}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+
+volumes:
+  postgres_data:
+  media:
+  static:

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+<div class="bg-gradient-to-br from-indigo-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 min-h-[70vh]">
+    <div class="max-w-4xl mx-auto px-6 md:px-10 py-12 md:py-20 flex flex-col gap-10">
+
+        <header class="flex flex-col gap-4 text-center">
+            <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-[0.2em]">Fale Conosco</span>
+            <h1 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+                {{ page.title }}
+            </h1>
+            {% if page.search_description %}
+            <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                {{ page.search_description }}
+            </p>
+            {% endif %}
+        </header>
+
+        <div class="prose prose-indigo dark:text-gray-300 prose-lg max-w-none text-gray-700 leading-relaxed">
+            {% for block in page.corpo %}
+            {% if block.block_type == 'paragrafo' %}
+            {{ block.value }}
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm p-8 md:p-10 flex flex-col items-center gap-6 text-center">
+            <div class="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                <i class="fa-regular fa-envelope text-indigo-600 text-2xl"></i>
+            </div>
+            <div class="flex flex-col gap-2">
+                <h2 class="font-bold text-gray-900 dark:text-gray-100 text-lg">Encarregado de Dados (DPO)</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+                    Para exercer seus direitos como titular de dados pessoais (LGPD, Art. 18) — como acessar, corrigir ou solicitar a exclusão dos seus dados — entre em contato com nosso Encarregado:
+                </p>
+                <a href="mailto:{{ page.dpo_email }}" class="text-indigo-600 font-bold text-base hover:underline mt-2">
+                    {{ page.dpo_email }}
+                </a>
+                <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">Responderemos em até 15 dias úteis, conforme Art. 19 da LGPD.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

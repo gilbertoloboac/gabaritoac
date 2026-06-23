@@ -50,6 +50,7 @@ EXPOSE 8000
 # 3. Add the virtual environment to PATH.
 ENV PYTHONUNBUFFERED=1 \
     PORT=8000 \
+    DJANGO_SETTINGS_MODULE=setup.settings.production \
     PATH="/opt/venv/bin:$PATH"
 
 
@@ -60,9 +61,9 @@ COPY --from=builder /opt/venv /opt/venv
 # Use /app folder as a directory where the source code is stored.
 WORKDIR /app
 
-# Set this directory to be owned by the "wagtail" user. This Wagtail project
-# uses SQLite, the folder needs to be owned by the user that
-# will be writing to the database file.
+# Set this directory to be owned by the "wagtail" user. The /app folder
+# is used for runtime data (media uploads, static files),
+# so it needs to be owned by the "wagtail" user.
 RUN chown wagtail:wagtail /app
 
 # Copy the source code of the project into the container.

@@ -1,14 +1,14 @@
 {% load wagtailimages_tags %}
 {% if anuncio_sidebar and anuncio_sidebar.imagem %}
-<p class="text-[9px] font-medium text-gray-300 uppercase tracking-[0.15em]">Publicidade</p>
+<p class="text-[9px] font-medium text-gray-300 dark:text-gray-500 uppercase tracking-[0.15em]">Publicidade</p>
 <a href="{{ anuncio_sidebar.link }}" target="_blank" rel="noopener noreferrer"
-    class="block bg-gray-50 border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition">
+    class="block bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl overflow-hidden hover:shadow-md transition">
     {% image anuncio_sidebar.imagem width-300 class="w-full h-auto" alt=anuncio_sidebar.cliente %}
 </a>
 {% else %}
-<div class="bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-100 rounded-2xl p-6 flex flex-col gap-3 text-center">
-    <i class="fas fa-ad text-indigo-300 text-2xl"></i>
-    <p class="text-xs text-indigo-400 font-medium">Espaço Publicitário</p>
-    <p class="text-[10px] text-indigo-300">Seu anúncio pode estar aqui</p>
+<div class="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950/30 dark:to-indigo-900/30 border border-indigo-100 dark:border-indigo-800 rounded-2xl p-6 flex flex-col gap-3 text-center">
+    <i class="fas fa-ad text-indigo-300 dark:text-indigo-600 text-2xl"></i>
+    <p class="text-xs text-indigo-400 dark:text-indigo-300 font-medium">Espaço Publicitário</p>
+    <p class="text-[10px] text-indigo-300 dark:text-indigo-400">Seu anúncio pode estar aqui</p>
 </div>
 {% endif %}
