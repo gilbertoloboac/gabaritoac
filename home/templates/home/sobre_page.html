@@ -5,9 +5,9 @@
 <div class="bg-gradient-to-br from-indigo-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
     <div class="max-w-4xl mx-auto px-6 md:px-10 py-12 md:py-20 flex flex-col gap-10">
 
-        <header class="flex flex-col gap-4 text-center">
+        <header class="flex flex-col gap-5 text-center">
             <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-[0.2em]">Sobre Nós</span>
-            <h1 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+            <h1 class="text-3xl md:text-5xl font-black text-gray-900 dark:text-gray-100 tracking-tight leading-tight">
                 {{ page.title }}
             </h1>
             {% if page.search_description %}
@@ -15,6 +15,7 @@
                 {{ page.search_description }}
             </p>
             {% endif %}
+            <div class="w-16 h-1 bg-gradient-to-r from-indigo-500 to-amber-400 rounded-full mx-auto mt-2"></div>
         </header>
 
         {% if page.imagem %}
@@ -23,17 +24,30 @@
         </div>
         {% endif %}
 
-        <div class="prose prose-indigo dark:text-gray-300 prose-lg max-w-none text-gray-700 leading-relaxed">
+        <div class="flex flex-col gap-10 text-gray-700 dark:text-gray-300 leading-relaxed">
             {% for block in page.corpo %}
             {% if block.block_type == 'paragrafo' %}
-            {{ block.value }}
+            <div class="prose prose-indigo dark:prose-invert prose-lg max-w-none
+                prose-headings:font-black prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-gray-100
+                prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mt-2 prose-h2:mb-4 prose-h2:border-b-2 prose-h2:border-indigo-200 dark:prose-h2:border-indigo-800 prose-h2:pb-3
+                prose-h3:text-xl prose-h3:mt-1.5 prose-h3:mb-3 prose-h3:text-indigo-800 dark:prose-h3:text-indigo-300
+                prose-h4:text-lg prose-h4:mt-1 prose-h4:mb-2 prose-h4:text-gray-800 dark:prose-h4:text-gray-200
+                prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-extrabold
+                prose-a:text-indigo-600 dark:prose-a:text-indigo-400 prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
+                prose-li:text-gray-700 dark:prose-li:text-gray-300
+                prose-p:text-base prose-p:leading-relaxed">
+                {{ block.value }}
+            </div>
             {% elif block.block_type == 'imagem' %}
-            <div class="my-6 rounded-xl overflow-hidden border border-gray-100 dark:border-slate-700">
+            <div class="my-4 rounded-2xl overflow-hidden border border-gray-100 dark:border-slate-700 shadow-sm">
                 {% image block.value width-800 class="w-full h-auto" %}
             </div>
             {% elif block.block_type == 'citacao' %}
-            <blockquote class="border-l-4 border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/40 p-6 rounded-r-2xl italic font-medium text-indigo-950 dark:text-indigo-200 my-8">
-                "{{ block.value }}"
+            <blockquote class="relative border-l-4 border-amber-400 bg-gradient-to-r from-amber-50 to-indigo-50/30 dark:from-amber-950/20 dark:to-indigo-950/30 p-8 rounded-r-2xl my-6 shadow-sm">
+                <span class="absolute top-4 left-6 text-5xl text-amber-300 dark:text-amber-600 font-serif leading-none">"</span>
+                <p class="pl-6 pt-4 italic font-medium text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+                    {{ block.value }}
+                </p>
             </blockquote>
             {% endif %}
             {% endfor %}
