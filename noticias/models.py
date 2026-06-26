@@ -225,6 +225,13 @@ class NoticiaIndexPage(Page):
             posicao="lateral_feed", ativo=True
         ).first()
 
+        context['categoria_filtro'] = categoria_filtro
+        if categoria_filtro:
+            cat_obj = CategoriaSnippet.objects.filter(slug=categoria_filtro).first()
+            context['categoria_nome'] = cat_obj.nome if cat_obj else categoria_filtro.title()
+        else:
+            context['categoria_nome'] = None
+
         return context
 
 
