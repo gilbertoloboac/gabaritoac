@@ -7,3 +7,6 @@ pymysql>=1.1
 gunicorn>=23
 Pillow>=11
 django-filter>=25
+celery>=5.4,<6
+redis>=5.0,<6
+django-celery-beat>=2.7,<3

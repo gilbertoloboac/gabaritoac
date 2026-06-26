@@ -19,11 +19,29 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   app:
     build: .
     restart: unless-stopped
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     ports:
       - "8000:8000"
@@ -32,7 +50,7 @@ services:
       - static:/app/static
     environment:
       DATABASE_ENGINE: postgresql
-      DJANGO_SETTINGS_MODULE: setup.settings.production
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-setup.settings.production}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-gabaritoac.com.br,www.gabaritoac.com.br}
       POSTGRES_DB: ${POSTGRES_DB:-gabaritoac}
@@ -40,13 +58,15 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
-      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-https://gabaritoac.com.br}
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8080}
       EMAIL_HOST: ${EMAIL_HOST:-smtp.sendgrid.net}
       EMAIL_PORT: ${EMAIL_PORT:-587}
       EMAIL_HOST_USER: ${EMAIL_HOST_USER:-apikey}
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      test: ["CMD", "curl", "-f", "-L", "http://localhost:8000/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -63,10 +83,10 @@ services:
     depends_on:
       - app
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     volumes:
-      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./deploy/nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
       - static:/app/static:ro
       - media:/app/media:ro
       - certbot_www:/var/www/certbot:ro
@@ -91,9 +111,78 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  celery_worker:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A setup worker -l INFO --concurrency=2
+    volumes:
+      - media:/app/media
+    environment:
+      DATABASE_ENGINE: postgresql
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-setup.settings.production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-gabaritoac.com.br,www.gabaritoac.com.br}
+      POSTGRES_DB: ${POSTGRES_DB:-gabaritoac}
+      POSTGRES_USER: ${POSTGRES_USER:-gabaritoac}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8080}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.sendgrid.net}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-apikey}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  celery_beat:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A setup beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - media:/app/media
+    environment:
+      DATABASE_ENGINE: postgresql
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-setup.settings.production}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-gabaritoac.com.br,www.gabaritoac.com.br}
+      POSTGRES_DB: ${POSTGRES_DB:-gabaritoac}
+      POSTGRES_USER: ${POSTGRES_USER:-gabaritoac}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8080}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.sendgrid.net}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-apikey}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   postgres_data:
   media:
   static:
   certbot_certs:
   certbot_www:
+  redis_data:

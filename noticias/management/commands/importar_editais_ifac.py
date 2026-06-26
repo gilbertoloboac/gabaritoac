@@ -3,7 +3,7 @@ from datetime import datetime
 
 import requests
 from lxml import html
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from noticias.models import NoticiaPage, NoticiaIndexPage, FonteSnippet, CategoriaSnippet
 from noticias.utils.editais import (
@@ -106,13 +106,15 @@ def parse_card(card, orgao: str, secao_path: str):
     }
 
 
-def fetch_secao(session, url: str):
+def fetch_secao(session, url: str, logger=None):
     try:
         resp = session.get(url, timeout=TIMEOUT)
         resp.raise_for_status()
         resp.encoding = "utf-8"
         return resp.text
     except requests.RequestException as e:
+        if logger:
+            logger(f"Erro ao acessar {url}: {e}")
         return None
 
 
@@ -131,8 +133,7 @@ class Command(BaseCommand):
 
         parent = NoticiaIndexPage.objects.first()
         if not parent:
-            self.stderr.write("Nenhuma NoticiaIndexPage encontrada na árvore.")
-            return
+            raise CommandError("Nenhuma NoticiaIndexPage encontrada na árvore.")
 
         fonte, _ = FonteSnippet.objects.get_or_create(
             nome="IFAC",
@@ -166,7 +167,7 @@ class Command(BaseCommand):
             while not sem_resultados:
                 self.stdout.write(f"  Página {pagina}...")
 
-                content = fetch_secao(session, f"{BASE_URL}/{secao_full}/?page={pagina}")
+                content = fetch_secao(session, f"{BASE_URL}/{secao_full}/?page={pagina}", logger=self.stderr.write)
                 if content is None or len(content) < 1000:
                     self.stdout.write("    (fim da paginação ou erro)")
                     break
@@ -285,9 +286,10 @@ class Command(BaseCommand):
 
                         parent.add_child(instance=page)
 
-                        page.save_revision(user=None, log_action=True)
+                        revision = page.save_revision(user=None, log_action=True)
+                        revision.publish()
                         criados += 1
-                        self.stdout.write(f"    -> Criado (slug={slug}) — aguardando aprovação")
+                        self.stdout.write(f"    -> Criado e publicado (slug={slug})")
 
                     except Exception as e:
                         self.stderr.write(f"    -> ERRO: {e}")

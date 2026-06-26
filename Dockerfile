@@ -1,16 +1,4 @@
-# Stage 1: Build Tailwind CSS
-FROM node:22-slim AS frontend
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm ci
-
-COPY setup/static/css/input.css ./setup/static/css/
-RUN npm run build:css
-
-
-# Stage 2: Build Python dependencies
+# Stage 1: Build Python dependencies
 FROM python:3.12-slim-bookworm AS builder
 
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
@@ -31,10 +19,11 @@ RUN pip install -r /requirements.txt
 RUN pip install "gunicorn==25.1.0"
 
 
-# Stage 3: Runtime
+# Stage 2: Runtime
 FROM python:3.12-slim-bookworm AS runtime
 
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
+    curl \
     libpq5 \
     libmariadb3 \
     libjpeg62-turbo \
@@ -57,7 +46,6 @@ WORKDIR /app
 RUN chown wagtail:wagtail /app
 
 COPY --chown=wagtail:wagtail . .
-COPY --from=frontend --chown=wagtail:wagtail /app/setup/static/css/setup.css ./setup/static/css/setup.css
 
 USER wagtail
 

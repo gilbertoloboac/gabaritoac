@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 import requests
 from lxml import etree
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from noticias.models import NoticiaPage, NoticiaIndexPage, FonteSnippet, CategoriaSnippet
 from noticias.utils.editais import (
@@ -68,8 +68,7 @@ class Command(BaseCommand):
 
         parent = NoticiaIndexPage.objects.first()
         if not parent:
-            self.stderr.write("Nenhuma NoticiaIndexPage encontrada na árvore.")
-            return
+            raise CommandError("Nenhuma NoticiaIndexPage encontrada na árvore.")
 
         fonte, _ = FonteSnippet.objects.get_or_create(
             nome="UFAC",
@@ -88,8 +87,7 @@ class Command(BaseCommand):
             resp = requests.get(RSS_URL, timeout=TIMEOUT)
             resp.raise_for_status()
         except requests.RequestException as e:
-            self.stderr.write(f"Erro ao acessar RSS: {e}")
-            return
+            raise CommandError(f"Erro ao acessar RSS: {e}")
 
         root = etree.fromstring(resp.content)
         items = root.findall(f"{{{NS_RSS}}}item")
@@ -199,9 +197,10 @@ class Command(BaseCommand):
 
                 parent.add_child(instance=page)
 
-                page.save_revision(user=None, log_action=True)
+                revision = page.save_revision(user=None, log_action=True)
+                revision.publish()
                 criados += 1
-                self.stdout.write(f"    -> Criado (slug={slug}) — aguardando aprovação")
+                self.stdout.write(f"    -> Criado e publicado (slug={slug})")
 
             except Exception as e:
                 self.stderr.write(f"    -> ERRO: {e}")

@@ -1,0 +1,119 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+
+{% block titletag %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    {% include "wagtailadmin/shared/header.html" with title=page_title icon="tick-inverse" %}
+
+    <div class="nice-padding">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="get" class="w-mb-8">
+            <ul class="tab-nav merged">
+                <li class="{% if filtro_atual == 'pendentes' %}active{% endif %}">
+                    <a href="?filtro=pendentes">Pendentes</a>
+                </li>
+                <li class="{% if filtro_atual == 'aprovados' %}active{% endif %}">
+                    <a href="?filtro=aprovados">Aprovados</a>
+                </li>
+                <li class="{% if filtro_atual == 'todos' %}active{% endif %}">
+                    <a href="?filtro=todos">Todos</a>
+                </li>
+            </ul>
+        </form>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="filtro" value="{{ filtro_atual }}">
+
+            <table class="listing">
+                <colgroup>
+                    <col width="30px">
+                    <col>
+                    <col width="15%">
+                    <col width="12%">
+                    <col width="12%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="12%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select-all"></th>
+                        <th>Título</th>
+                        <th>Fonte</th>
+                        <th>Status</th>
+                        <th>Prazo</th>
+                        <th>Importado</th>
+                        <th>Live</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for edital in editais %}
+                        <tr>
+                            <td><input type="checkbox" name="page_ids" value="{{ edital.id }}"></td>
+                            <td>
+                                <a href="{% url 'wagtailadmin_pages:edit' edital.id %}" target="_blank">
+                                    {{ edital.title }}
+                                </a>
+                            </td>
+                            <td>{{ edital.fonte.nome|default:"—" }}</td>
+                            <td>
+                                {% with label=edital.status_inscricao %}
+                                    <span class="status-tag {% if label.1 == 'encerrado' %}primary{% elif label.1 == 'ultimos_dias' %}warning{% else %}success{% endif %}">
+                                        {{ label.0 }}
+                                    </span>
+                                {% endwith %}
+                            </td>
+                            <td>{{ edital.prazo_inscricao|date:"d/m/Y"|default:"—" }}</td>
+                            <td>{{ edital.first_published_at|date:"d/m/Y H:i"|default:"—" }}</td>
+                            <td>
+                                {% if edital.live %}
+                                    <span class="status-tag success">Sim</span>
+                                {% else %}
+                                    <span class="status-tag primary">Não</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'wagtailadmin_pages:edit' edital.id %}" class="button button-small button-secondary">
+                                    Editar
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="no-results">
+                                Nenhum edital encontrado.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if editais %}
+                <div class="w-flex w-gap-2 w-mt-4">
+                    <button type="submit" name="action" value="aprovar" class="button">
+                        Aprovar selecionados
+                    </button>
+                    <button type="submit" name="action" value="rejeitar" class="button button-secondary no">
+                        Remover do ar
+                    </button>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('select-all')?.addEventListener('change', function() {
+            document.querySelectorAll('input[name="page_ids"]').forEach(cb => cb.checked = this.checked);
+        });
+    </script>
+{% endblock %}
