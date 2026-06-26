@@ -96,15 +96,6 @@ STORAGES["staticfiles"][
     "BACKEND"
 ] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
-# Remove the css directory that contains input.css (Tailwind source) from
-# STATICFILES_DIRS in production. Only the compiled setup.css is needed.
-# input.css contains @import "tailwindcss" which ManifestStaticFilesStorage
-# wrongly interprets as a reference to a static file.
-STATICFILES_DIRS = [
-    str(d) for d in STATICFILES_DIRS
-    if not (Path(d).name == "css" and (Path(d) / "input.css").exists())
-]
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.sendgrid.net")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
