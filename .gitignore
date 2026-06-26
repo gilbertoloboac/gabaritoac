@@ -29,5 +29,4 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# Tailwind / build output
-setup/static/css/setup.css
+
