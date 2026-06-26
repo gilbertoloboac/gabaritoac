@@ -2,21 +2,13 @@ from django.db import migrations
 
 
 def publish_noticiaindexpage(apps, schema_editor):
-    NoticiaIndexPage = apps.get_model("noticias.NoticiaIndexPage")
-    Page = apps.get_model("wagtailcore.Page")
+    from wagtail.models import Page
 
-    nip = NoticiaIndexPage.objects.filter(slug="noticias").first()
+    nip = Page.objects.filter(slug="noticias", content_type__app_label="noticias", content_type__model="noticiaindexpage").first()
     if not nip:
         return
 
-    page = Page.objects.get(pk=nip.pk)
-    if page.live:
-        return
-
-    from wagtail.models import Page as RealPage
-
-    real_page = RealPage.objects.get(pk=nip.pk)
-    revision = real_page.save_revision(user=None, log_action=True)
+    revision = nip.save_revision(user=None, log_action=True)
     revision.publish()
 
 
