@@ -48,9 +48,6 @@
     {# Smooth color transition for dark mode #}
     <style>
         html { transition: background-color 0.3s, color 0.3s; }
-        .toggle-thumb-transition {
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
     </style>
 </head>
 
@@ -132,19 +129,16 @@
             var isDark = root.classList.toggle('dark');
             localStorage.setItem('darkmode', isDark);
 
-            var thumb = document.getElementById('darkmode-thumb');
-            var thumbMobile = document.getElementById('darkmode-thumb-mobile');
-            var iconSun = document.getElementById('darkmode-icon-sun');
-            var iconMoon = document.getElementById('darkmode-icon-moon');
-            var iconSunMobile = document.getElementById('darkmode-icon-sun-mobile');
-            var iconMoonMobile = document.getElementById('darkmode-icon-moon-mobile');
+            var icon = document.getElementById('darkmode-icon');
+            var iconMobile = document.getElementById('darkmode-icon-mobile');
 
-            if (thumb) thumb.style.transform = isDark ? 'translateX(38px)' : 'translateX(0)';
-            if (thumbMobile) thumbMobile.style.transform = isDark ? 'translateX(38px)' : 'translateX(0)';
-            if (iconSun) iconSun.className = isDark ? 'fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300 text-slate-400' : 'fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300 text-amber-600';
-            if (iconMoon) iconMoon.className = isDark ? 'fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300 text-indigo-600' : 'fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300 text-slate-400';
-            if (iconSunMobile) iconSunMobile.className = isDark ? 'fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300 text-slate-400' : 'fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300 text-amber-600';
-            if (iconMoonMobile) iconMoonMobile.className = isDark ? 'fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300 text-indigo-600' : 'fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300 text-slate-400';
+            if (isDark) {
+                if (icon) { icon.classList.remove('text-amber-400'); icon.classList.add('text-amber-300', 'drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'); }
+                if (iconMobile) { iconMobile.classList.remove('text-amber-400'); iconMobile.classList.add('text-amber-300', 'drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'); }
+            } else {
+                if (icon) { icon.classList.remove('text-amber-300', 'drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'); icon.classList.add('text-amber-400'); }
+                if (iconMobile) { iconMobile.classList.remove('text-amber-300', 'drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'); iconMobile.classList.add('text-amber-400'); }
+            }
         }
     </script>
 </body>

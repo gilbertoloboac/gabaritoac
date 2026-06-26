@@ -14,19 +14,16 @@ class HomePage(Page):
     def get_context(self, request):
         context = super().get_context(request)
         
-        # 1. Puxa todas as notícias publicadas
         noticias_vivas = NoticiaPage.objects.live().public()
 
-        # 2. Hero Split: Notícia Principal (Destaque=True)
-        context['noticia_principal'] = noticias_vivas.filter(destaque=True).order_by('destaque_ordem', '-first_published_at').first()
+        context['noticia_principal'] = noticias_vivas.order_by('-first_published_at').first()
         
-        # 3. Mural de Editais: Só revisados, agrupados por status, máx 8 na Home
         cat_editais = CategoriaSnippet.objects.filter(slug="editais").first()
-        mural_qs = noticias_vivas.filter(revisado=True)
+        mural_qs = noticias_vivas
         if cat_editais:
             mural_qs = mural_qs.filter(categoria=cat_editais)
 
-        todos_editais = list(mural_qs.order_by('prazo_inscricao', '-first_published_at')[:8])
+        todos_editais = list(mural_qs.order_by('prazo_inscricao', '-first_published_at')[:12])
         grupos = {"ultimos_dias": [], "aberto": [], "encerrado": []}
         for e in todos_editais:
             _, key = e.status_inscricao
@@ -37,7 +34,6 @@ class HomePage(Page):
         context['mural_editais_abertos'] = grupos['aberto']
         context['mural_editais_encerrados'] = grupos['encerrado']
 
-        # 5. Grid Inferior: últimas notícias (exclui as de destaque)
         destaques_ids = noticias_vivas.filter(destaque=True).values_list('id', flat=True)
         context['ultimas_noticias'] = noticias_vivas.exclude(id__in=destaques_ids).order_by('-first_published_at')[:6]
 

@@ -30,19 +30,12 @@
         </div>
 
         <div class="flex-1 flex items-center justify-end gap-2">
-            <button type="button" id="darkmode-toggle" onclick="toggleDarkMode()" aria-label="Alternar modo"
-                class="relative w-[72px] h-[34px] rounded-full overflow-hidden flex items-center cursor-pointer
-                                 bg-transparent border-2 border-amber-400 dark:border-indigo-400
-                       hover:scale-[1.03] active:scale-95 transition-all duration-300 shadow-sm">
-                <i id="darkmode-icon-sun" class="fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300
-                    text-amber-600 dark:text-slate-400"></i>
-                <i id="darkmode-icon-moon" class="fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300
-                    text-slate-400 dark:text-indigo-600"></i>
-                <span id="darkmode-thumb"
-                    class="absolute top-[3px] left-[3px] w-7 h-7 rounded-full
-                           bg-[#293962] dark:bg-slate-950 shadow-md
-                           toggle-thumb-transition z-20">
-                </span>
+            <button type="button" id="darkmode-toggle" onclick="toggleDarkMode()" aria-label="Alternar modo claro/escuro"
+                class="relative w-9 h-9 rounded-xl flex items-center justify-center cursor-pointer
+                       bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20
+                       transition-all duration-300 hover:scale-105 active:scale-95">
+                <i id="darkmode-icon" class="fa-solid fa-lightbulb text-base transition-all duration-300
+                    text-amber-400 dark:text-amber-300"></i>
             </button>
             <a href="https://whatsapp.com/channel/0029VbDJLSR3bbV8Vzsnka3v" target="_blank" rel="noopener noreferrer"
                 class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all duration-200 shadow-sm whitespace-nowrap hover:shadow-md hover:-translate-y-0.5 active:translate-y-0">
@@ -68,20 +61,11 @@
                 <a href="/noticias/?categoria=cursos" class="hover:text-[#2997FF] py-2 border-b border-white/10 transition-colors duration-200">Cursos</a>
                 <a href="/noticias/" class="hover:text-[#2997FF] py-2 border-b border-white/10 transition-colors duration-200">Notícias</a>
                 <a href="/sobre/" class="hover:text-[#2997FF] py-2 transition-colors duration-200">Sobre</a>
-                <button type="button" onclick="toggleDarkMode()" class="py-2 flex items-center">
-                    <span class="relative w-[68px] h-[30px] rounded-full overflow-hidden flex items-center cursor-pointer
-                       bg-transparent border-2 border-amber-400 dark:border-indigo-400
-                                 hover:scale-[1.03] active:scale-95 transition-all duration-300 flex-shrink-0 shadow-sm">
-                        <i id="darkmode-icon-sun-mobile" class="fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300
-                            text-amber-600 dark:text-slate-400"></i>
-                        <i id="darkmode-icon-moon-mobile" class="fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300
-                            text-slate-400 dark:text-indigo-600"></i>
-                        <span id="darkmode-thumb-mobile"
-                            class="absolute top-[3px] left-[3px] w-6 h-6 rounded-full
-                                   bg-[#293962] dark:bg-slate-950 shadow-md
-                                   toggle-thumb-transition z-20">
-                        </span>
-                    </span>
+                <button type="button" onclick="toggleDarkMode()" class="py-2 flex items-center gap-3"
+                    aria-label="Alternar modo claro/escuro">
+                    <i id="darkmode-icon-mobile" class="fa-solid fa-lightbulb text-sm transition-all duration-300
+                        text-amber-400 dark:text-amber-300"></i>
+                    <span class="text-xs font-semibold text-white">Modo escuro</span>
                 </button>
             </nav>
         </div>
@@ -91,18 +75,10 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         if (document.documentElement.classList.contains('dark')) {
-            var thumb = document.getElementById('darkmode-thumb');
-            var thumbMobile = document.getElementById('darkmode-thumb-mobile');
-            var iconSun = document.getElementById('darkmode-icon-sun');
-            var iconMoon = document.getElementById('darkmode-icon-moon');
-            var iconSunMobile = document.getElementById('darkmode-icon-sun-mobile');
-            var iconMoonMobile = document.getElementById('darkmode-icon-moon-mobile');
-            if (thumb) thumb.style.transform = 'translateX(38px)';
-            if (thumbMobile) thumbMobile.style.transform = 'translateX(38px)';
-            if (iconSun) iconSun.className = 'fa-regular fa-sun text-[13px] absolute left-[10px] z-10 transition-all duration-300 text-slate-400';
-            if (iconMoon) iconMoon.className = 'fa-regular fa-moon text-[13px] absolute right-[10px] z-10 transition-all duration-300 text-indigo-600';
-            if (iconSunMobile) iconSunMobile.className = 'fa-regular fa-sun text-[11px] absolute left-[8px] z-10 transition-all duration-300 text-slate-400';
-            if (iconMoonMobile) iconMoonMobile.className = 'fa-regular fa-moon text-[11px] absolute right-[8px] z-10 transition-all duration-300 text-indigo-600';
+            var icon = document.getElementById('darkmode-icon');
+            var iconMobile = document.getElementById('darkmode-icon-mobile');
+            if (icon) { icon.classList.remove('text-amber-400'); icon.classList.add('text-amber-300', 'drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'); }
+            if (iconMobile) { iconMobile.classList.remove('text-amber-400'); iconMobile.classList.add('text-amber-300', 'drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]'); }
         }
         const menuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');

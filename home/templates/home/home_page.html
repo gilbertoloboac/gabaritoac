@@ -6,26 +6,25 @@
 
     {% if noticia_principal %}
     <section data-reveal="fade-in"
-        class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2 min-h-[360px]">
+        class="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-md overflow-hidden grid grid-cols-1 md:grid-cols-2 min-h-[380px]">
 
-        <div class="relative min-h-[260px] md:min-h-[360px] bg-gray-100 flex-1">
+        <div class="relative min-h-[260px] md:min-h-[380px] bg-gray-100 flex-1">
             {% if noticia_principal.imagem_capa %}
-            {% image noticia_principal.imagem_capa fill-700x500 class="absolute inset-0 w-full h-full object-cover"
-            alt=noticia_principal.title %}
+            {% image noticia_principal.imagem_capa fill-700x500 class="absolute inset-0 w-full h-full object-cover" alt=noticia_principal.title %}
             {% else %}
-            <div
-                class="absolute inset-0 bg-gradient-to-br from-indigo-900 to-slate-800 flex items-center justify-center text-white text-xs font-semibold">
-                GabaritoAC</div>
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 flex items-center justify-center">
+                <span class="text-white/20 text-6xl font-black tracking-tighter">GAC</span>
+            </div>
             {% endif %}
 
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-transparent"></div>
+
             <div class="absolute top-4 left-4 flex gap-2 z-10">
-                <span
-                    class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-gray-900 shadow-sm">
+                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-400 text-gray-900 shadow-md">
                     Destaque
                 </span>
                 {% if noticia_principal.categoria %}
-                <span
-                    class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-white shadow-sm"
+                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-white shadow-md"
                     style="background-color: {{ noticia_principal.categoria.cor_badge }};">
                     {{ noticia_principal.categoria.nome }}
                 </span>
@@ -35,27 +34,30 @@
 
         <div class="p-6 md:p-10 flex flex-col justify-between bg-white dark:bg-slate-800 flex-1">
             <div class="flex flex-col gap-3">
-                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest block">
-                    Notícia Principal • {{ noticia_principal.first_published_at|date:"d \d\e F" }}
+                <span class="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest block">
+                    Notícia Principal &bull; {{ noticia_principal.first_published_at|date:"d \d\e F" }}
                 </span>
-                <h1
-                    class="text-xl md:text-2xl lg:text-3xl font-black text-indigo-950 dark:text-indigo-200 leading-tight tracking-tight hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <h1 class="text-xl md:text-2xl lg:text-3xl font-black text-gray-900 dark:text-gray-100 leading-tight tracking-tight hover:text-indigo-600 dark:hover:text-indigo-400 transition">
                     <a href="{% pageurl noticia_principal %}">{{ noticia_principal.title }}</a>
                 </h1>
-                <p class="text-gray-500 dark:text-gray-400 text-xs md:text-sm leading-relaxed line-clamp-3">
+                <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed line-clamp-4">
                     {{ noticia_principal.intro }}
                 </p>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-gray-100 dark:border-slate-700 flex items-center gap-3">
-                <div
-                    class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 font-bold text-[10px] flex items-center justify-center shadow-sm shrink-0">
-                    GAC
+            <div class="mt-6 pt-4 border-t border-gray-100 dark:border-slate-700 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-black text-[10px] flex items-center justify-center shadow-sm shrink-0">
+                        GAC
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-gray-900 dark:text-gray-100 leading-none">Equipe GabaritoAC</p>
+                        <p class="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5">Editoria de Educação</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-xs font-black text-gray-900 dark:text-gray-100 leading-none">Equipe GabaritoAC</p>
-                    <p class="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5">Editoria de Educação</p>
-                </div>
+                <a href="{% pageurl noticia_principal %}" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 transition">
+                    Ler mais <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                </a>
             </div>
         </div>
 
@@ -63,24 +65,28 @@
     {% endif %}
 
 
-
-    <section data-reveal="fade-in-up" class="bg-indigo-50/50 dark:bg-indigo-950/30 rounded-3xl p-6 md:p-8">
+    <section data-reveal="fade-in-up" class="bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-950/40 dark:to-slate-800 rounded-3xl p-6 md:p-8 border border-indigo-100 dark:border-indigo-900/50">
         <div class="flex flex-col gap-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-sm font-black text-indigo-950 dark:text-indigo-200 tracking-tight flex items-center gap-2 uppercase">
-                    <i class="fa-solid fa-bullhorn text-indigo-600"></i> Mural de Editais
+                    <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-sm shrink-0">
+                        <i class="fa-solid fa-bullhorn text-[10px]"></i>
+                    </div>
+                    Mural de Editais
                 </h2>
-                <a href="/noticias/{% if cat_editais %}?categoria=editais{% endif %}" class="text-xs font-bold text-indigo-600 hover:underline">Ver todos</a>
+                <a href="/noticias/?categoria=editais" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 transition">
+                    Ver todos <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                </a>
             </div>
 
             {% if mural_editais_urgentes or mural_editais_abertos or mural_editais_encerrados %}
 
             {% if mural_editais_urgentes %}
             <div>
-                <h3 class="text-[10px] font-black text-orange-600 uppercase tracking-wider flex items-center gap-1.5 mb-3">
-                    <i class="fa-solid fa-bolt"></i> Últimos Dias
+                <h3 class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider flex items-center gap-1.5 mb-3">
+                    <i class="fa-solid fa-bolt text-[9px]"></i> Últimos Dias
                 </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {% for edital in mural_editais_urgentes %}
                         {% include "includes/_card_edital_mural.html" with edital=edital delay=forloop.counter0 %}
                     {% endfor %}
@@ -90,10 +96,10 @@
 
             {% if mural_editais_abertos %}
             <div>
-                <h3 class="text-[10px] font-black text-emerald-600 uppercase tracking-wider flex items-center gap-1.5 mb-3">
-                    <i class="fa-solid fa-circle-check"></i> Inscrições Abertas
+                <h3 class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5 mb-3">
+                    <i class="fa-solid fa-circle-check text-[9px]"></i> Inscrições Abertas
                 </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {% for edital in mural_editais_abertos %}
                         {% include "includes/_card_edital_mural.html" with edital=edital delay=forloop.counter0 %}
                     {% endfor %}
@@ -104,12 +110,12 @@
             {% if mural_editais_encerrados %}
             <div>
                 <details class="group">
-                    <summary class="text-[10px] font-black text-gray-400 uppercase tracking-wider cursor-pointer flex items-center gap-1.5 mb-3 list-none hover:text-gray-600 transition">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Encerrados
-                        <span class="text-[9px] font-medium text-gray-300 normal-case ml-1">({{ mural_editais_encerrados|length }})</span>
+                    <summary class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider cursor-pointer flex items-center gap-1.5 mb-3 list-none hover:text-gray-600 dark:hover:text-gray-400 transition">
+                        <i class="fa-solid fa-clock-rotate-left text-[9px]"></i> Encerrados
+                        <span class="text-[9px] font-medium text-gray-300 dark:text-gray-600 normal-case ml-1">({{ mural_editais_encerrados|length }})</span>
                         <i class="fa-solid fa-chevron-down text-[8px] ml-1 group-open:rotate-180 transition"></i>
                     </summary>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
                         {% for edital in mural_editais_encerrados %}
                             {% include "includes/_card_edital_mural.html" with edital=edital delay=forloop.counter0 %}
                         {% endfor %}
@@ -119,7 +125,7 @@
             {% endif %}
 
             {% else %}
-            <div class="col-span-full text-center py-8 text-gray-400 text-xs bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700">
+            <div class="text-center py-8 text-gray-400 text-xs bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700">
                 Nenhum edital listado no mural.
             </div>
             {% endif %}
@@ -141,62 +147,60 @@
             {% endif %}
         </a>
     </div>
-    {% else %}
-    <div data-reveal="fade-in" class="w-full py-4 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 flex items-center justify-center text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-        Espaço Publicitário - 728x90
-    </div>
     {% endif %}
 
 
-    <section data-reveal="fade-in-up" class="flex flex-col sm:flex-row gap-4 justify-between items-center border-b border-gray-100 dark:border-slate-700 pb-4">
-        <div class="flex flex-wrap gap-2">
-            <a href="/noticias/"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition">Tudo</a>
-            <a href="/noticias/?categoria=concursos"
-                class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 transition">Concursos</a>
-            <a href="/noticias/?categoria=educacao"
-                class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 transition">Educação</a>
-        </div>
+    <section data-reveal="fade-in-up">
+        <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center border-b border-gray-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-wrap gap-2">
+                <a href="/noticias/"
+                    class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition hover:bg-indigo-700">Tudo</a>
+                <a href="/noticias/?categoria=editais"
+                    class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 transition">Editais</a>
+                <a href="/noticias/?categoria=concursos"
+                    class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 transition">Concursos</a>
+                <a href="/noticias/?categoria=educacao"
+                    class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600 transition">Educação</a>
+            </div>
 
-        <form action="/noticias/" method="GET" class="relative max-w-xs w-full">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 text-xs">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
-            <input type="text" name="busca" placeholder="O que você procura?"
-                class="w-full bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:border-indigo-500 placeholder-gray-400 dark:placeholder-gray-400 transition" />
-        </form>
+            <form action="/noticias/" method="GET" class="relative max-w-xs w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400 text-xs">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" name="busca" placeholder="O que você procura?"
+                    class="w-full bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 placeholder-gray-400 dark:placeholder-gray-400 transition" />
+            </form>
+        </div>
     </section>
 
 
-    <section data-reveal="fade-in-up" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <section data-reveal="fade-in-up" class="grid grid-cols-1 md:grid-cols-3 gap-5">
         {% for noticia in ultimas_noticias %}
         <div data-reveal="fade-in-up" data-delay="{% widthratio forloop.counter0 1 100 %}"
-            class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col justify-between group h-full">
+            class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col justify-between group h-full hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-700 transition-all duration-300">
 
             <div class="relative h-44 bg-gray-50 dark:bg-slate-700 overflow-hidden shrink-0">
                 {% if noticia.imagem_capa %}
-                {% image noticia.imagem_capa fill-400x240 class="w-full h-full object-cover group-hover:scale-105
-                transition duration-500" alt=noticia.title %}
+                {% image noticia.imagem_capa fill-400x240 class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt=noticia.title %}
                 {% else %}
-                <div class="w-full h-full bg-slate-100 flex items-center justify-center text-gray-400 text-xs">
-                    GabaritoAC</div>
+                <div class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-600 dark:to-slate-700 flex items-center justify-center">
+                    <span class="text-gray-300 dark:text-gray-500 text-2xl font-black">GAC</span>
+                </div>
                 {% endif %}
 
                 {% if noticia.categoria %}
-                <span
-                    class="absolute top-3 right-3 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider text-white shadow-sm"
+                <span class="absolute top-3 right-3 px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider text-white shadow-md"
                     style="background-color: {{ noticia.categoria.cor_badge }};">
                     {{ noticia.categoria.nome }}
                 </span>
                 {% endif %}
             </div>
 
-            <div class="p-4 flex-1 flex flex-col gap-1.5">
-                <span class="text-[10px] font-medium text-gray-400 dark:text-gray-400 flex items-center gap-1">
+            <div class="p-4 flex-1 flex flex-col gap-2">
+                <span class="text-[10px] font-medium text-gray-400 dark:text-gray-500 flex items-center gap-1">
                     <i class="fa-regular fa-clock text-[9px]"></i> {{ noticia.first_published_at|date:"d M Y" }}
                 </span>
-                <h3
-                    class="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
                     <a href="{% pageurl noticia %}">{{ noticia.title }}</a>
                 </h3>
                 <p class="text-gray-500 dark:text-gray-400 text-[11px] line-clamp-3 leading-relaxed">
@@ -206,12 +210,9 @@
 
             <div class="px-4 pb-4 pt-3 border-t border-gray-50 dark:border-slate-700 flex items-center justify-between text-xs shrink-0">
                 <a href="{% pageurl noticia %}"
-                    class="font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
-                    Ler matéria completa <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                    class="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 transition">
+                    Ler mais <i class="fa-solid fa-arrow-right text-[9px]"></i>
                 </a>
-                <button class="text-gray-400 hover:text-gray-600 transition p-1" aria-label="Salvar">
-                    <i class="fa-regular fa-bookmark"></i>
-                </button>
             </div>
 
         </div>
@@ -223,7 +224,7 @@
     </section>
 
     <a href="https://whatsapp.com/channel/0029VbDJLSR3bbV8Vzsnka3v" target="_blank" rel="noopener noreferrer" data-reveal="fade-in-up"
-        class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl p-5 md:p-6 shadow-sm flex items-center justify-between gap-4 transition">
+        class="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white rounded-2xl p-5 md:p-6 shadow-sm flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-md">
         <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
                 <i class="fab fa-whatsapp text-2xl"></i>
@@ -233,7 +234,7 @@
                 <p class="text-xs text-emerald-100 leading-relaxed">Fique por dentro de concursos, editais e educação no Acre.</p>
             </div>
         </div>
-        <span class="text-xs font-bold text-white/80 uppercase tracking-wider shrink-0">Entrar →</span>
+        <span class="text-xs font-bold text-white/80 uppercase tracking-wider shrink-0">Entrar <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
     </a>
 
 </div>
