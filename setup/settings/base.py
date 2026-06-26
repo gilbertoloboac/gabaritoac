@@ -162,6 +162,10 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
 WAGTAIL_SITE_NAME = "GabaritoAC"
 
+# Custom admin logo
+WAGTAIL_ADMIN_LOGO = "images/logo_nova_gabaritoac.png"
+WAGTAIL_ADMIN_LOGO_ALT = "GabaritoAC"
+
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
 WAGTAILSEARCH_BACKENDS = {
