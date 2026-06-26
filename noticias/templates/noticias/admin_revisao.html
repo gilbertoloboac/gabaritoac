@@ -33,70 +33,99 @@
             {% csrf_token %}
             <input type="hidden" name="filtro" value="{{ filtro_atual }}">
 
-            <table class="listing">
-                <colgroup>
-                    <col width="30px">
-                    <col>
-                    <col width="15%">
-                    <col width="12%">
-                    <col width="12%">
-                    <col width="10%">
-                    <col width="10%">
-                    <col width="12%">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" id="select-all"></th>
-                        <th>Título</th>
-                        <th>Fonte</th>
-                        <th>Status</th>
-                        <th>Prazo</th>
-                        <th>Importado</th>
-                        <th>Live</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for edital in editais %}
-                        <tr>
-                            <td><input type="checkbox" name="page_ids" value="{{ edital.id }}"></td>
-                            <td>
-                                <a href="{% url 'wagtailadmin_pages:edit' edital.id %}" target="_blank">
-                                    {{ edital.title }}
-                                </a>
-                            </td>
-                            <td>{{ edital.fonte.nome|default:"—" }}</td>
-                            <td>
-                                {% with label=edital.status_inscricao %}
-                                    <span class="status-tag {% if label.1 == 'encerrado' %}primary{% elif label.1 == 'ultimos_dias' %}warning{% else %}success{% endif %}">
-                                        {{ label.0 }}
-                                    </span>
-                                {% endwith %}
-                            </td>
-                            <td>{{ edital.prazo_inscricao|date:"d/m/Y"|default:"—" }}</td>
-                            <td>{{ edital.first_published_at|date:"d/m/Y H:i"|default:"—" }}</td>
-                            <td>
-                                {% if edital.live %}
-                                    <span class="status-tag success">Sim</span>
-                                {% else %}
-                                    <span class="status-tag primary">Não</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{% url 'wagtailadmin_pages:edit' edital.id %}" class="button button-small button-secondary">
-                                    Editar
-                                </a>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="8" class="no-results">
-                                Nenhum edital encontrado.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {% for edital in editais %}
+            <div class="w-panel" style="margin-bottom: 16px; border: 1px solid #e6e6e6; border-radius: 6px; padding: 16px; background: #fff;">
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                    <input type="checkbox" name="page_ids" value="{{ edital.id }}" style="margin-top: 4px;">
+
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <a href="{% url 'wagtailadmin_pages:edit' edital.id %}" target="_blank"
+                               style="font-size: 14px; font-weight: bold; color: #333; text-decoration: none;">
+                                {{ edital.title }}
+                            </a>
+
+                            {% with label=edital.status_inscricao %}
+                                <span style="font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 4px; text-transform: uppercase;
+                                    {% if label.1 == 'encerrado' %}background: #fee2e2; color: #991b1b;
+                                    {% elif label.1 == 'ultimos_dias' %}background: #fff7ed; color: #9a3412;
+                                    {% else %}background: #ecfdf5; color: #065f46;{% endif %}">
+                                    {{ label.0 }}
+                                </span>
+                            {% endwith %}
+
+                            {% if edital.live %}
+                                <span style="font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #dbeafe; color: #1e40af;">LIVE</span>
+                            {% else %}
+                                <span style="font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #f3f4f6; color: #6b7280;">DRAFT</span>
+                            {% endif %}
+                        </div>
+
+                        <table style="width: 100%; font-size: 12px; color: #555; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">Órgão:</td>
+                                <td style="padding: 3px 0;">{{ edital.orgao_responsavel|default:"—" }}</td>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">Nº Edital:</td>
+                                <td style="padding: 3px 0;">{{ edital.numero_edital|default:"—" }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">Fonte:</td>
+                                <td style="padding: 3px 0;">{{ edital.fonte.nome|default:"—" }}</td>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">Categoria:</td>
+                                <td style="padding: 3px 0;">{{ edital.categoria.nome|default:"—" }}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">Prazo Inscrição:</td>
+                                <td style="padding: 3px 0;">{{ edital.prazo_inscricao|date:"d/m/Y"|default:"Não informado" }}</td>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">Publicado em:</td>
+                                <td style="padding: 3px 0;">{{ edital.first_published_at|date:"d/m/Y H:i"|default:"—" }}</td>
+                            </tr>
+                            {% if edital.link_pdf_oficial %}
+                            <tr>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">Link Oficial:</td>
+                                <td colspan="3" style="padding: 3px 0;">
+                                    <a href="{{ edital.link_pdf_oficial }}" target="_blank" rel="noopener" style="color: #2563eb; word-break: break-all;">
+                                        {{ edital.link_pdf_oficial|truncatechars:80 }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% if edital.fonte_original_url %}
+                            <tr>
+                                <td style="padding: 3px 8px 3px 0; font-weight: 600; white-space: nowrap; color: #374151;">URL Original:</td>
+                                <td colspan="3" style="padding: 3px 0;">
+                                    <a href="{{ edital.fonte_original_url }}" target="_blank" rel="noopener" style="color: #2563eb; word-break: break-all;">
+                                        {{ edital.fonte_original_url|truncatechars:80 }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </table>
+
+                        {% if edital.intro %}
+                        <div style="margin-top: 8px; padding: 8px 12px; background: #f9fafb; border-radius: 4px; font-size: 12px; color: #374151; line-height: 1.5; border-left: 3px solid #6366f1;">
+                            {{ edital.intro|truncatewords:60 }}
+                        </div>
+                        {% endif %}
+
+                        <div style="margin-top: 8px; display: flex; gap: 8px;">
+                            <a href="{% url 'wagtailadmin_pages:edit' edital.id %}" class="button button-small button-secondary">
+                                Editar
+                            </a>
+                            {% if edital.fonte_original_url %}
+                            <a href="{{ edital.fonte_original_url }}" target="_blank" class="button button-small button-secondary">
+                                Ver fonte original
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 40px; color: #6b7280; font-size: 13px;">
+                Nenhum edital encontrado.
+            </div>
+            {% endfor %}
 
             {% if editais %}
                 <div class="w-flex w-gap-2 w-mt-4">

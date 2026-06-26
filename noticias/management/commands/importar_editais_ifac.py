@@ -286,10 +286,10 @@ class Command(BaseCommand):
 
                         parent.add_child(instance=page)
 
-                        revision = page.save_revision(user=None, log_action=True)
-                        revision.publish()
+                        page.save_revision(user=None, log_action=True)
+                        page.unpublish()
                         criados += 1
-                        self.stdout.write(f"    -> Criado e publicado (slug={slug})")
+                        self.stdout.write(f"    -> Criado como draft (slug={slug})")
 
                     except Exception as e:
                         self.stderr.write(f"    -> ERRO: {e}")
