@@ -25,6 +25,21 @@
         </div>
     </div>
 
+    {% banner_topo_noticias as banner_ntc %}
+    {% if banner_ntc %}
+    <div data-reveal="fade-in" class="flex flex-col gap-1">
+        <p class="text-[9px] font-medium text-gray-300 dark:text-gray-500 uppercase tracking-[0.15em]">Publicidade</p>
+        <a href="{{ banner_ntc.link }}" target="_blank" rel="noopener noreferrer" class="block w-full hover:opacity-90 transition-opacity">
+            {% if banner_ntc.imagem %}
+                {% image banner_ntc.imagem fill-900x100 class="w-full h-auto rounded-2xl" alt=banner_ntc.cliente %}
+            {% else %}
+                <div class="w-full py-4 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 flex items-center justify-center text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                    {{ banner_ntc.cliente }} — 728x90
+                </div>
+            {% endif %}
+        </a>
+    </div>
+    {% endif %}
 
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
 
@@ -90,8 +105,23 @@
             {% endif %}
 
             <div class="flex flex-col gap-4">
+                {% banner_intercalado as banner_icl %}
                 {% for item in noticias %}
                 {% include "noticias/partials/card_noticia_feed.html" with item=item delay=forloop.counter0 %}
+                {% if banner_icl and forloop.counter == 3 %}
+                <div data-reveal="fade-in" class="flex flex-col gap-1">
+                    <p class="text-[9px] font-medium text-gray-300 dark:text-gray-500 uppercase tracking-[0.15em]">Publicidade</p>
+                    <a href="{{ banner_icl.link }}" target="_blank" rel="noopener noreferrer" class="block w-full hover:opacity-90 transition-opacity">
+                        {% if banner_icl.imagem %}
+                            {% image banner_icl.imagem fill-900x100 class="w-full h-auto rounded-2xl" alt=banner_icl.cliente %}
+                        {% else %}
+                            <div class="w-full py-4 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 flex items-center justify-center text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+                                {{ banner_icl.cliente }} — 728x90
+                            </div>
+                        {% endif %}
+                    </a>
+                </div>
+                {% endif %}
                 {% empty %}
                 <div
                     class="text-center py-16 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl shadow-sm text-gray-400 dark:text-gray-500 italic text-sm flex flex-col gap-2">

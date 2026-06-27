@@ -33,3 +33,13 @@ def banner_topo_noticias():
         data_inicio__lte=hoje,
         data_fim__gte=hoje,
     ).first()
+
+@register.simple_tag
+def banner_intercalado():
+    hoje = timezone.now().date()
+    return AnuncioSnippet.objects.filter(
+        ativo=True,
+        posicao="intercalado_cards",
+        data_inicio__lte=hoje,
+        data_fim__gte=hoje,
+    ).first()
